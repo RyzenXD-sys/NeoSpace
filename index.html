@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HanzXD Hosting</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#0b0b14;
+  --card:rgba(255,255,255,.06);
+  --text:#fff;
+  --muted:#b9b9c9;
+  --primary:#6c63ff;
+}
+[data-theme="light"]{
+  --bg:#f4f6fb;
+  --card:#fff;
+  --text:#111;
+  --muted:#666;
+}
+
+*{margin:0;box-sizing:border-box;font-family:Inter}
+body{
+  background:var(--bg);
+  color:var(--text);
+}
+header,section,footer{padding:24px}
+.card{
+  background:var(--card);
+  padding:18px;
+  border-radius:16px;
+  margin-bottom:16px;
+  transition:.4s;
+}
+.price{font-size:22px;font-weight:800}
+.btn{
+  margin-top:12px;
+  padding:10px;
+  border-radius:10px;
+  background:linear-gradient(135deg,#6c63ff,#9b5cff);
+  color:#fff;
+  text-align:center;
+  cursor:pointer;
+}
+.admin-input{
+  width:100%;
+  padding:8px;
+  margin-top:8px;
+  display:none;
+}
+.admin .admin-input{display:block}
+
+.top-actions{
+  display:flex;
+  gap:10px;
+  margin-bottom:20px;
+}
+.top-actions button{
+  padding:8px 12px;
+  border-radius:10px;
+  border:none;
+  cursor:pointer;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Neo Space <span style="color:#6c63ff">Success.</span></h1>
+
+  <div class="top-actions">
+    <button onclick="toggleAdmin()">Admin Mode</button>
+    <button onclick="toggleTheme()">Dark / Light</button>
+  </div>
+</header>
+
+<section>
+  <h2>List Panel & Harga</h2>
+  <div id="pricing"></div>
+</section>
+
+<footer style="text-align:center;color:var(--muted)">
+  © 2026 HanzXD Host
+</footer>
+
+<script src="data.js"></script>
+<script src="admin.js"></script>
+<script src="theme.js"></script>
+
+<script>
+function render(){
+  const pricing = document.getElementById("pricing");
+  pricing.innerHTML = "";
+  const data = loadPackages();
+
+  data.forEach(pkg=>{
+    const priceText = pkg.price
+      ? `Rp ${pkg.price.toLocaleString("id-ID")}`
+      : "(Hubungi Admin)";
+
+    const msg = encodeURIComponent(
+      `Halo Admin, saya ingin membeli ${pkg.name} (${priceText})`
+    );
+
+    const wa = `https://wa.me/${pkg.adminWA}?text=${msg}`;
+
+    const card = document.createElement("div");
+    card.className="card";
+    card.innerHTML=`
+      <h3>${pkg.name}</h3>
+      <div class="price">${priceText}</div>
+      <input class="admin-input"
+        type="number"
+        placeholder="Edit harga"
+        oninput="updatePrice(${pkg.id}, this.value)">
+      <div class="btn" onclick="window.open('${wa}','_blank')">
+        Beli via WhatsApp
+      </div>
+    `;
+    pricing.appendChild(card);
+  });
+}
+
+render();
+</script>
+
+</body>
+</html>
